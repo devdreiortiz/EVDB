@@ -1,0 +1,312 @@
+# RANDORANIC — Concepto completo
+
+---
+
+## Lo que acabas de describir en términos precisos
+
+El problema que resuelve RANDORANIC no es técnico. Es cognitivo.
+
+Cuando un LLM recibe "crea una web para empresa de alimentos", distribuye su capacidad entre arquitectura, diseño, copy, lógica, rutas, componentes, todo al mismo tiempo. El resultado es promedio en todo porque fue mediocre en cada cosa individualmente.
+
+RANDORANIC fuerza al LLM a ser **absolutamente brillante en una sola cosa a la vez.**
+
+---
+
+## La arquitectura real de RANDORANIC
+
+No son 3 capas. Son 3 **modos cognitivos distintos.**
+
+```
+SKILL 1 → Modo: Arquitecto sin lápiz
+SKILL 2 → Modo: Cartógrafo de flujos  
+SKILL 3 → Modo: Investigador por nodo
+```
+
+Ninguno escribe código. Ninguno decide colores. Ninguno trivializa nada.
+
+---
+
+## SKILL 1 — Conceptual Blueprint
+
+*El arquitecto que no puede tocar materiales todavía*
+
+**Qué hace:** Toma lenguaje natural vago y lo convierte en una plantilla conceptual completa. Solo UX. Sin UI. Sin código. Sin colores. Solo: qué existe, para qué existe, y cómo se relaciona con lo demás.
+
+**Regla crítica:** Si en el output aparece una palabra de diseño (color, fuente, botón, card, grid), el skill falló.
+
+**Prompt:**
+```
+Input recibido: [petición en lenguaje natural]
+
+Tu único objetivo es definir QUÉ necesita existir, no CÓMO se ve.
+
+Para cada sección necesaria define:
+NOMBRE: [nombre funcional, no visual]
+PROPÓSITO: [qué necesidad del usuario resuelve]
+CONTENIDO MÍNIMO: [qué información/funcionalidad debe tener]
+RELACIÓN: [con qué otras secciones se conecta y por qué]
+TIPO DE INTERACCIÓN: [el usuario lee / actúa / decide / navega]
+
+Prohibido mencionar: colores, fuentes, layouts, componentes UI.
+Solo arquitectura de necesidades.
+
+Al terminar, lista los VACÍOS:
+¿Qué necesitaría esta empresa/proyecto que el usuario no mencionó 
+pero que es evidente que necesita?
+```
+
+**Output esperado para el caso de alimentos:**
+```
+SECCIÓN: Catálogo de productos
+PROPÓSITO: El comprador mayorista necesita ver qué hay disponible
+CONTENIDO MÍNIMO: Lista de productos, unidades, disponibilidad
+RELACIÓN: conecta con Contacto (para hacer pedido) y con Inicio (destacados)
+TIPO: El usuario decide
+
+SECCIÓN: Proceso de compra
+PROPÓSITO: Cómo se hace un pedido mayorista (no todos lo saben)
+...
+
+VACÍOS DETECTADOS:
+- No mencionó zona de cobertura geográfica (crítico para mayorista local)
+- No mencionó pedido mínimo (información decisiva para el comprador)
+- No mencionó tiempos de entrega
+```
+
+---
+
+## SKILL 2 — Flow Decomposer
+*El cartógrafo que separa por comportamiento, no por apariencia*
+
+**Qué hace:** Toma el Blueprint del Skill 1 y lo separa en carpetas de flujo. El criterio de separación no es visual ni temático. Es comportamental. ¿Qué hace el usuario en este flujo? ¿A qué tipo de usuario sirve?
+
+**La pregunta que guía cada separación:**
+> ¿Esto sirve al mismo usuario en el mismo momento mental que aquello?
+
+Si no, van a carpetas distintas.
+
+**Prompt:**
+```
+Blueprint recibido: [output de Skill 1]
+
+Agrupa las secciones en flujos según criterio comportamental:
+
+PREGUNTA POR CADA SECCIÓN:
+- ¿En qué momento del journey llega el usuario aquí?
+- ¿Qué acaba de hacer antes?
+- ¿Qué va a hacer después?
+- ¿Es el mismo tipo de usuario que el flujo anterior?
+
+FLUJOS POSIBLES (no son los únicos, detéctalos):
+- Flujo de descubrimiento (usuario que llega por primera vez)
+- Flujo de evaluación (usuario que está comparando opciones)
+- Flujo de decisión (usuario que ya sabe lo que quiere)
+- Flujo de retorno (usuario que ya compró antes)
+- Flujo de confianza (usuario que necesita validar antes de comprometer)
+
+Para cada flujo genera:
+FLUJO: [nombre]
+SECCIONES QUE PERTENECEN: [lista]
+USUARIO EN ESTE FLUJO: [quién es, qué sabe, qué necesita]
+MOMENTO EMOCIONAL: [qué siente el usuario en este flujo]
+NODOS: [lista de nodos dentro del flujo, ej: Hero → Catálogo → CTA]
+```
+
+**Output esperado:**
+```
+FLUJO 1: Confianza inicial
+SECCIONES: Inicio, About, Clientes anteriores, Certificaciones
+USUARIO: Comprador mayorista nuevo, evaluando si confiar
+MOMENTO EMOCIONAL: Escepticismo → búsqueda de señales de confianza
+NODOS: Hero → Propuesta de valor → Prueba social → About → CTA suave
+
+FLUJO 2: Decisión de compra
+SECCIONES: Catálogo, Pedido mínimo, Zona de cobertura, Contacto
+USUARIO: Comprador que ya confía, evaluando si es logísticamente viable
+MOMENTO EMOCIONAL: Interés → evaluación práctica → decisión
+NODOS: Catálogo → Filtros → Disponibilidad → Contacto directo
+```
+
+---
+
+## SKILL 3 — Node Amplifier
+*El investigador que agota cada nodo antes de pasar al siguiente*
+
+**Qué hace:** Toma cada nodo de cada flujo y lo agota. Primero define qué debe hacer ese nodo. Luego busca activamente la mejor implementación posible que exista en el mundo web para ese nodo específico. No lo más común. Lo mejor.
+
+**Esta es la skill más importante de RANDORANIC.**
+Aquí es donde el sistema deja de ser un planificador y se convierte en un amplificador de posibilidades.
+
+**Prompt:**
+```
+Nodo a amplificar: [nombre del nodo]
+Flujo al que pertenece: [flujo]
+Usuario en este momento: [descripción del usuario]
+Momento emocional: [del flujo]
+
+FASE A — Define el trabajo real de este nodo:
+¿Qué tiene que lograr este nodo en el usuario?
+No qué tiene que mostrar. Qué tiene que LOGRAR.
+(ej: no "mostrar información de la empresa" sino "convertir escepticismo en confianza suficiente para seguir explorando")
+
+FASE B — Investiga las mejores implementaciones:
+Busca en lo que sabes del mundo web:
+- ¿Cuál es la implementación más efectiva de esto que hayas visto?
+- ¿Cuál es la más innovadora que tenga sentido para este contexto?
+- ¿Cuál es la más simple que aún logre el objetivo?
+
+Para cada implementación encontrada:
+IMPLEMENTACIÓN: [descripción]
+POR QUÉ FUNCIONA: [razón psicológica o funcional]
+NIVEL DE COMPLEJIDAD: simple / medio / complejo
+ADECUADA PARA ESTE CONTEXTO: sí / con ajustes / no
+
+FASE C — Conexiones lógicas con nodos adyacentes:
+¿Qué debería saber el nodo anterior para preparar a este?
+¿Qué debería dejar listo este nodo para el siguiente?
+¿Hay alguna micro-interacción que conecte ambos naturalmente?
+
+FASE D — Propuesta final:
+Implementación recomendada + variante disruptiva si existe una.
+```
+
+**Output esperado para nodo "About":**
+```
+NODO: About
+TRABAJO REAL: Convertir "empresa desconocida" en "empresa con historia y criterio"
+
+IMPLEMENTACIONES ENCONTRADAS:
+
+1. Timeline horizontal con scroll lento
+   Por qué funciona: la trayectoria temporal da sensación de permanencia y solidez
+   Complejidad: medio
+   Adecuada: sí
+
+2. Founder story en formato conversacional (no corporativo)
+   Por qué funciona: humaniza la empresa, genera conexión emocional
+   Complejidad: simple
+   Adecuada: con ajustes (depende del tipo de empresa)
+
+3. Números que cuentan la historia (años, toneladas distribuidas, clientes)
+   Por qué funciona: mayoristas valoran datos concretos sobre narrativa
+   Complejidad: simple
+   Adecuada: altamente adecuada para este contexto
+
+DISRUPTIVA:
+About que termina con una mini-entrevista en video de 30 segundos
+al fundador respondiendo "por qué alimentos, por qué local, por qué mayorista"
++ CTA inmediato vinculado a catálogo
+
+CONEXIÓN CON NODO ANTERIOR (Hero):
+El Hero debe plantar una pregunta que About responde.
+No "quiénes somos" sino la respuesta a "por qué confiarles mis pedidos"
+
+CONEXIÓN CON NODO SIGUIENTE (CTA suave):
+About debe terminar con tensión resuelta.
+El usuario ya confía → el CTA suave no debería ser "contáctenos"
+debería ser "ver qué tenemos disponible esta semana"
+```
+
+---
+
+## Las skills que le faltan a RANDORANIC
+
+Hay 2 skills adicionales que el sistema necesita para ser completo:
+
+---
+
+### SKILL 0 — Intent Extractor
+*Antes del Blueprint, antes de todo*
+
+**Qué hace:** Toma la petición en lenguaje natural y extrae la intención real. Lo que el usuario dijo y lo que el usuario necesita muchas veces son cosas diferentes.
+
+**Prompt:**
+```
+Petición recibida: [texto en lenguaje natural]
+
+Extrae en capas:
+
+LO QUE DIJO: [literal]
+LO QUE NECESITA: [necesidad funcional real]
+LO QUE NO SABE QUE NECESITA: [vacíos evidentes]
+EL USUARIO FINAL DE SU WEB: [quién va a usar esto, no quién lo pide]
+CRITERIO DE ÉXITO REAL: [¿cuándo esta web habrá funcionado? ¿una venta? ¿una llamada? ¿una visita física?]
+
+Devuelve una sola oración que redefine la petición con precisión:
+"Lo que realmente necesitas es [X] para que [usuario final] pueda [acción concreta] y así [resultado de negocio]."
+```
+
+---
+
+### SKILL 4 — Cross-Flow Connector
+*Después del Skill 3, antes de pasar a ECOSYS*
+
+**Qué hace:** Revisa todos los flujos ya amplificados y detecta conexiones entre flujos que no se habían visto. Un nodo del Flujo 1 puede necesitar algo del Flujo 2 que todavía no está definido.
+
+**Prompt:**
+```
+Flujos amplificados: [todos los outputs del Skill 3]
+
+Busca conexiones entre flujos (no dentro de flujos):
+
+¿Hay información que un flujo necesita que otro flujo tiene?
+¿Hay un momento donde el usuario naturalmente saltaría de un flujo a otro?
+¿Hay algún nodo que debería aparecer en múltiples flujos con adaptación?
+¿Hay alguna contradicción entre lo que dos flujos le prometen al mismo usuario?
+
+Para cada conexión encontrada:
+FLUJO A → FLUJO B
+PUNTO DE CONEXIÓN: [nodo en A] → [nodo en B]
+TIPO: información compartida / transición natural / contradicción / oportunidad
+PROPUESTA: cómo hacer la conexión sin romper la coherencia de cada flujo
+```
+
+---
+
+## RANDORANIC + ECOSYS — Cómo se conectan
+
+```
+RANDORANIC
+│
+├── SKILL 0: Intent Extractor
+│      ↓ [petición redefinida con precisión]
+│
+├── SKILL 1: Conceptual Blueprint  
+│      ↓ [arquitectura de necesidades, sin UI]
+│
+├── SKILL 2: Flow Decomposer
+│      ↓ [flujos separados por comportamiento]
+│
+├── SKILL 3: Node Amplifier
+│      ↓ [cada nodo agotado con mejor implementación]
+│
+└── SKILL 4: Cross-Flow Connector
+       ↓ [conexiones entre flujos definidas]
+       
+       ↓↓↓ HANDOFF A ECOSYS ↓↓↓
+
+ECOSYS recibe:
+- Arquitectura completa y justificada
+- Flujos definidos por comportamiento
+- Cada nodo con su mejor implementación
+- Conexiones entre flujos
+- Criterio de éxito real
+
+ECOSYS construye sobre esto.
+No interpreta. No adivina.
+Solo ejecuta sobre una base pensada.
+```
+
+---
+
+## La diferencia real en una línea
+
+Sin RANDORANIC: *"Hazme una web de alimentos"* → web promedio.
+
+Con RANDORANIC: el LLM agotó el nodo "About" antes de pensar en el siguiente nodo. Agotó el nodo "Catálogo" con toda su capacidad. Nunca dividió su atención.
+
+**El output no es una web mejor diseñada. Es una web que tomó mejores decisiones.**
+
+---
+
+¿Arrancamos a escribir los `.md` de cada skill, o primero definimos cómo se ve el handoff formal entre RANDORANIC y ECOSYS?

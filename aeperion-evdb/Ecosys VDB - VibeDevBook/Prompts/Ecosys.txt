@@ -1,0 +1,544 @@
+# ECOSYS — Skills Architecture
+
+---
+
+## AGENTE 1: ECOSYSTEMIZER
+*Conecta todo. No juzga. No ordena. Solo une.*
+
+---
+
+### Skill 1.1 — Vinculaciones Lógicas
+**Qué hace:** Analiza un módulo y determina el punto óptimo de entrada dentro del sistema existente. No acepta "crear página nueva" como primera opción.
+
+**Prompt:**
+```
+Dado este módulo: [X]
+Y este sistema actual: [estructura]
+
+Evalúa en orden:
+1. ¿Puede vivir DENTRO de una sección existente?
+2. ¿Puede ser componente flotante/modal/drawer?
+3. ¿Puede reemplazar algo redundante?
+4. ¿Necesita ruta propia? (última opción)
+
+Devuelve: ubicación óptima + razón en 1 línea.
+```
+
+---
+
+### Skill 1.2 — Orphan Hunter
+**Qué hace:** Escanea el repo buscando archivos, componentes, funciones y rutas que existen pero no están referenciados desde ningún otro punto del sistema.
+
+**Prompt:**
+```
+Escanea el proyecto completo.
+Lista todo lo que:
+- Existe como archivo pero nadie importa
+- Es una ruta pero no hay link que lleve ahí
+- Es una función exportada pero sin uso registrado
+
+Formato de salida:
+[archivo] → tipo de huérfano → último punto de contacto conocido
+```
+
+---
+
+### Skill 1.3 — Entry Point Mapper
+**Qué hace:** Detecta todos los puntos de entrada reales al sistema. No los que deberían ser, sino los que son.
+
+**Prompt:**
+```
+Encuentra todos los entry points reales:
+- index, main, app
+- rutas públicas sin auth
+- hooks de inicialización
+- scripts de arranque
+- llamadas externas (webhooks, APIs)
+
+No incluyas lo que debería ser entry point.
+Solo lo que actualmente arranca algo.
+```
+
+---
+
+### Skill 1.4 — Dependency Chain Tracer
+**Qué hace:** Toma un módulo y traza toda la cadena de dependencias hacia arriba y hacia abajo. Detecta cadenas circulares.
+
+**Prompt:**
+```
+Módulo: [X]
+
+Traza:
+↑ ¿Quién depende de este módulo?
+↓ ¿De qué depende este módulo?
+↔ ¿Hay ciclos?
+
+Si hay ciclo: márcalo como RIESGO CRÍTICO.
+Output: árbol simple, máximo 3 niveles.
+```
+
+---
+
+### Skill 1.5 — API Surface Scanner
+**Qué hace:** Mapea todas las APIs expuestas: endpoints, funciones públicas, eventos emitidos. Da el estado real de la superficie del sistema.
+
+**Prompt:**
+```
+Escanea y lista SOLO lo que el sistema expone hacia afuera:
+- Endpoints HTTP/REST/GraphQL
+- Funciones públicas entre módulos
+- Eventos emitidos (emit, dispatch, publish)
+- Props de componentes raíz
+
+No incluyas lógica interna.
+Solo la frontera del sistema.
+```
+
+---
+
+### Skill 1.6 — Cross-Context Bridge
+**Qué hace:** Cuando hay dos sistemas que no se hablan (ej: frontend React + backend Express + script Python suelto), detecta qué necesitarían para conectarse y propone el puente mínimo viable.
+
+**Prompt:**
+```
+Contextos detectados: [A], [B], [C]
+
+Para cada par desconectado:
+- ¿Qué necesita A para hablarle a B?
+- ¿Cuál es el puente mínimo? (no el ideal, el mínimo)
+- ¿Hay algo ya existente que pueda servir de puente?
+
+No propongas refactors. Solo puentes.
+```
+
+---
+
+## AGENTE 2: SYSTEMIZER
+*Todo conectado debe tener sentido. Flujo, jerarquía, coherencia.*
+
+---
+
+### Skill 2.1 — Flow Architect
+**Qué hace:** Toma la estructura conectada y diseña el flujo lógico principal. Define qué viene antes y qué viene después en términos operacionales.
+
+**Prompt:**
+```
+Sistema actual: [estructura conectada]
+
+Define el flujo principal de uso:
+Usuario entra → hace X → necesita Y → llega a Z
+
+Luego define flujos secundarios (máximo 3).
+Marca cualquier punto donde el flujo se rompe o no tiene continuación lógica.
+
+Output: diagrama de texto simple.
+```
+
+---
+
+### Skill 2.2 — Auth Coherence Checker
+**Qué hace:** Detecta inconsistencias en la lógica de autenticación y autorización a través del sistema. ¿Hay rutas protegidas sin lógica? ¿Lógica de auth duplicada?
+
+**Prompt:**
+```
+Analiza SOLO la lógica de auth en el sistema:
+
+1. ¿Cuántos sistemas de auth hay? (debería ser 1)
+2. ¿Hay rutas protegidas por diferentes mecanismos?
+3. ¿Hay rutas que deberían estar protegidas y no lo están?
+4. ¿El token/sesión se maneja de forma consistente?
+
+Output: mapa de auth + inconsistencias encontradas.
+```
+
+---
+
+### Skill 2.3 — Naming Standardizer
+**Qué hace:** Detecta inconsistencias de nomenclatura en todo el sistema. Variables, rutas, componentes, archivos. Propone un estándar unificado.
+
+**Prompt:**
+```
+Escanea el sistema y detecta:
+- Archivos en camelCase mezclados con kebab-case
+- Funciones con verbos inconsistentes (get vs fetch vs load vs retrieve)
+- Componentes con nombres que no describen lo que hacen
+- Rutas inconsistentes (/user vs /users vs /perfil)
+
+Propón un estándar en 5 reglas o menos.
+Lista los 10 cambios de mayor impacto primero.
+```
+
+---
+
+### Skill 2.4 — Data Flow Validator
+**Qué hace:** Traza cómo viajan los datos a través del sistema. Detecta puntos donde los datos se transforman sin justificación, se pierden, o viajan de forma ineficiente.
+
+**Prompt:**
+```
+Traza el flujo de [dato principal, ej: "orden de compra"]:
+
+Origen → transformaciones → destino
+
+Detecta:
+- ¿Se transforma más de lo necesario?
+- ¿Se duplica en algún punto?
+- ¿Hay un paso donde podría perderse?
+- ¿El formato final es consistente con el origen?
+
+Output: flujo + puntos de riesgo marcados.
+```
+
+---
+
+### Skill 2.5 — Hierarchy Builder
+**Qué hace:** Toma una estructura plana o caótica y propone una jerarquía lógica de módulos, sin mover nada todavía. Solo define dónde debería estar cada cosa.
+
+**Prompt:**
+```
+Módulos actuales: [lista]
+
+Propón una jerarquía en máximo 3 niveles:
+Nivel 1: dominios principales (auth, productos, pagos, etc.)
+Nivel 2: subdominios o funciones dentro de cada dominio
+Nivel 3: utilidades o helpers específicos
+
+No muevas nada. Solo define dónde debería estar cada cosa.
+Justifica cada decisión en máximo 5 palabras.
+```
+
+---
+
+### Skill 2.6 — State Coherence Mapper
+**Qué hace:** Analiza cómo se maneja el estado global y local en el sistema. Detecta estado duplicado, estado que debería ser global pero es local, y viceversa.
+
+**Prompt:**
+```
+Analiza el manejo de estado:
+
+1. Lista todo el estado global existente
+2. Lista estado local que múltiples componentes replican
+3. Detecta estado global que solo usa 1 componente
+
+Propón: qué debería subir, qué debería bajar.
+No refactorices. Solo mapea y propón.
+```
+
+---
+
+## AGENTE 3: EVOLUTIONER
+*El sistema existe. Ahora se cuestiona todo. Se versiona el pensamiento.*
+
+---
+
+### Skill 3.1 — Version Auditor
+**Qué hace:** Analiza la versión actual del sistema y documenta lo que encontró, con qué criterio, y qué problemas tiene. Es el punto de partida de cada versión nueva.
+
+**Prompt:**
+```
+Revisión de [V_actual]:
+
+Documenta:
+1. Qué funciona correctamente
+2. Qué existe pero no aporta
+3. Qué debería existir y no existe
+4. Qué flujo está roto
+5. Qué decisión arquitectónica fue incorrecta
+
+Formato:
+HALLAZGO: [descripción]
+IMPACTO: alto/medio/bajo
+CATEGORÍA: flujo/estructura/redundancia/ausencia
+```
+
+---
+
+### Skill 3.2 — Scenario Simulator
+**Qué hace:** Simula flujos de usuario reales en texto. No necesita correr el código. Traza el camino paso a paso y detecta dónde se rompe la experiencia o la lógica.
+
+**Prompt:**
+```
+Simula este escenario: [rol de usuario + objetivo]
+
+Paso a paso:
+Usuario hace X → sistema responde Y → usuario necesita Z...
+
+Detecta:
+- ¿En qué paso el flujo se rompe?
+- ¿En qué paso el usuario queda sin siguiente acción clara?
+- ¿Hay algún paso que requiere conocimiento que el usuario no tiene?
+
+Output: flujo completo + puntos de quiebre marcados con [BREAK].
+```
+
+---
+
+### Skill 3.3 — Redundancy Detector
+**Qué hace:** Busca funcionalidad duplicada en el sistema. No solo código igual, sino funciones que hacen lo mismo aunque estén escritas diferente.
+
+**Prompt:**
+```
+Busca redundancia funcional (no solo de código):
+
+- ¿Hay dos módulos que hacen lo mismo para contextos diferentes?
+- ¿Hay dos funciones con diferente nombre pero mismo propósito?
+- ¿Hay dos sistemas de notificación, dos dashboards, dos formas de login?
+
+Para cada redundancia encontrada:
+REDUNDANCIA: [A] y [B] hacen lo mismo
+PROPUESTA: fusionar / eliminar [B] / mantener ambos con scope diferente
+```
+
+---
+
+### Skill 3.4 — Utility Gap Finder
+**Qué hace:** Detecta funcionalidades que existen en el código pero que ningún flujo real activa. El "módulo fantasma".
+
+**Prompt:**
+```
+Busca módulos o funciones que:
+- Están escritos y funcionan
+- Pero ninguna ruta activa los llega
+- O ningún usuario real llegaría a activarlos según el flujo actual
+
+Para cada gap:
+MÓDULO: [X]
+ESTADO: existe pero no participa
+OPCIONES: integrar al flujo / reutilizar en otro contexto / eliminar
+```
+
+---
+
+### Skill 3.5 — Evolution Proposer
+**Qué hace:** Basado en los hallazgos del Version Auditor y los otros skills, propone la siguiente versión del sistema. Define si es una V+0.1 (reorganización) o una V+1.0 (cambio de rumbo funcional).
+
+**Prompt:**
+```
+Basado en hallazgos de [V_actual]:
+
+Define la propuesta:
+TIPO: reorganización (V_actual + 0.1) / nuevo rumbo (V_actual + 1.0)
+
+Justificación en máximo 3 oraciones.
+
+Cambios propuestos:
+- [cambio 1] → impacto esperado
+- [cambio 2] → impacto esperado
+
+Qué NO cambia y por qué.
+
+Registra como: Propuesta [V_nueva] — fecha — motivo principal.
+```
+
+---
+
+### Skill 3.6 — Decision Logger
+**Qué hace:** Registra cada decisión tomada sobre el sistema, por qué se tomó, qué alternativas se descartaron y con qué criterio. Es la memoria del sistema.
+
+**Prompt:**
+
+```
+Registra esta decisión:
+
+DECISIÓN: [qué se decidió hacer]
+VERSIÓN: [en qué versión se implementa]
+MOTIVO: [por qué esta opción]
+ALTERNATIVAS DESCARTADAS: [qué más se consideró]
+CRITERIO DE DESCARTE: [por qué no]
+REVERSA POSIBLE: sí/no — [cómo revertirlo si falla]
+```
+
+---
+
+### Skill 3.7 — Architectural Critic
+**Qué hace:** Analiza decisiones arquitectónicas específicas y las cuestiona. No propone soluciones todavía. Solo argumenta por qué algo está mal elegido.
+
+**Prompt:**
+```
+Analiza esta decisión arquitectónica: [X]
+
+Argumenta en contra considerando:
+- Escalabilidad (¿aguanta 10x más carga/complejidad?)
+- Mantenibilidad (¿un nuevo dev lo entiende en 1 hora?)
+- Coherencia con el resto del sistema
+- Deuda técnica que genera
+
+No propongas solución todavía.
+Solo devuelve: argumento crítico + nivel de urgencia (1-3).
+```
+
+---
+
+## AGENTE 4: HARMONIZER
+*El sistema ya tiene una versión final. Ahora se ve, se siente y fluye.*
+
+---
+
+### Skill 4.1 — Visual Hierarchy Definer
+**Qué hace:** Analiza la estructura de pantallas y define la jerarquía visual: qué es lo primero que el ojo debe ver, qué es secundario, qué es utilidad.
+
+**Prompt:**
+```
+Pantalla: [X]
+Propósito principal del usuario en esta pantalla: [Y]
+
+Define:
+NIVEL 1 (atención inmediata): [qué elemento]
+NIVEL 2 (segundo enfoque): [qué elemento]
+NIVEL 3 (disponible pero no protagonista): [qué elemento]
+FONDO/UTILIDAD: [qué elemento]
+
+Detecta: ¿hay elementos de Nivel 3 compitiendo visualmente con Nivel 1?
+```
+
+---
+
+### Skill 4.2 — Component Classifier
+**Qué hace:** Clasifica todos los componentes UI del sistema según su tipo funcional y detecta inconsistencias de uso (mismo componente usado para cosas distintas, o cosas distintas con componentes distintos).
+
+**Prompt:**
+```
+Lista de componentes: [X]
+
+Clasifica cada uno como:
+- CONTENEDOR (agrupa otros elementos)
+- ACCIÓN (el usuario hace algo aquí)
+- INFORMACIÓN (el usuario lee/ve algo)
+- NAVEGACIÓN (lleva al usuario a otro lugar)
+- FEEDBACK (responde a una acción del usuario)
+
+Detecta: ¿hay componentes que mezclan 2+ tipos?
+Esos son candidatos a split o rediseño.
+```
+
+---
+
+### Skill 4.3 — Interaction Pattern Enforcer
+**Qué hace:** Define los patrones de interacción estándar del sistema y detecta dónde se rompen. ¿Hay 3 formas diferentes de confirmar una acción? ¿El hover se comporta diferente en distintas secciones?
+
+**Prompt:**
+```
+Analiza las interacciones del sistema:
+
+Define el patrón estándar para:
+- Confirmar una acción destructiva
+- Mostrar estado de carga
+- Mostrar error al usuario
+- Navegar hacia atrás
+- Cancelar una operación
+
+Luego detecta dónde el sistema se desvía de ese patrón.
+Output: patrón definido + lista de desviaciones.
+```
+
+---
+
+### Skill 4.4 — UX Flow Validator
+**Qué hace:** Valida que el flujo visual sea coherente con el flujo lógico que Systemizer definió. Detecta si la UI lleva al usuario por un camino diferente al que el sistema espera.
+
+**Prompt:**
+```
+Flujo lógico esperado: [del Systemizer]
+Flujo visual actual: [de la UI]
+
+Compara paso a paso.
+Detecta:
+- ¿Hay pasos lógicos sin representación visual?
+- ¿Hay elementos visuales que no corresponden a ningún paso lógico?
+- ¿El orden visual coincide con el orden operacional?
+
+Output: mapa de correspondencia + brechas marcadas.
+```
+
+---
+
+### Skill 4.5 — Design Token Extractor
+**Qué hace:** Extrae o propone el sistema de tokens de diseño mínimo necesario para que el sistema sea visualmente consistente. Colores, tipografía, espaciado, radios.
+
+**Prompt:**
+```
+Analiza el sistema visual actual (o propón desde cero):
+
+Define tokens mínimos necesarios:
+COLORES: primario, secundario, fondo, texto, error, éxito
+TIPOGRAFÍA: escala (3 tamaños máximo para empezar)
+ESPACIADO: unidad base y multiplicadores
+RADIOS: borde de componentes (1 valor para empezar)
+
+Criterio: mínimo que da consistencia real.
+No el ideal. El mínimo funcional.
+```
+
+---
+
+### Skill 4.6 — Responsive Logic Mapper
+**Qué hace:** Define cómo cada sección principal del sistema se adapta a diferentes tamaños. No diseña. Define la lógica de adaptación.
+
+**Prompt:**
+```
+Para cada sección principal del sistema:
+
+Define qué cambia en:
+MOBILE: [qué desaparece, qué colapsa, qué se convierte en otro elemento]
+TABLET: [diferencias respecto a desktop]
+DESKTOP: [versión base]
+
+Detecta: ¿hay funcionalidad accesible solo en desktop sin alternativa mobile?
+Eso es un BREAK de accesibilidad funcional.
+```
+
+---
+
+## ESTRUCTURA FINAL DE ECOSYS
+
+```
+ECOSYS/
+│
+├── 0_RepoCaos/
+│
+├── 1_Ecosystemizer/
+│   ├── Ecosystemizer.md
+│   ├── skills/
+│   │   ├── vinculaciones-logicas.md
+│   │   ├── orphan-hunter.md
+│   │   ├── entry-point-mapper.md
+│   │   ├── dependency-chain-tracer.md
+│   │   ├── api-surface-scanner.md
+│   │   └── cross-context-bridge.md
+│
+├── 2_Systemizer/
+│   ├── Systemizer.md
+│   ├── skills/
+│   │   ├── flow-architect.md
+│   │   ├── auth-coherence-checker.md
+│   │   ├── naming-standardizer.md
+│   │   ├── data-flow-validator.md
+│   │   ├── hierarchy-builder.md
+│   │   └── state-coherence-mapper.md
+│
+├── 3_Evolutioner/
+│   ├── Evolutioner.md
+│   ├── skills/
+│   │   ├── version-auditor.md
+│   │   ├── scenario-simulator.md
+│   │   ├── redundancy-detector.md
+│   │   ├── utility-gap-finder.md
+│   │   ├── evolution-proposer.md
+│   │   ├── decision-logger.md
+│   │   └── architectural-critic.md
+│
+└── 4_Harmonizer/
+    ├── Harmonizer.md
+    ├── skills/
+    │   ├── visual-hierarchy-definer.md
+    │   ├── component-classifier.md
+    │   ├── interaction-pattern-enforcer.md
+    │   ├── ux-flow-validator.md
+    │   ├── design-token-extractor.md
+    │   └── responsive-logic-mapper.md
+```
+
+---
+
+Lo que tienes aquí es **24 skills especializados**, cada uno con un propósito que no se pisa con otro. El criterio que usé para diseñarlos fue: **cada skill debe poder correr solo, en frío, con el mínimo de contexto posible.** Eso es lo que ahorra tokens y maximiza precisión.
+
+¿Quieres que desarrolle algún skill completo en formato `.md` listo para usar, o seguimos expandiendo el concepto?
